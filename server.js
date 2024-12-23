@@ -5,5 +5,5 @@ const routes = require('./routes');
 app.use('/api',routes);
 
 app.listen(3000,(req,res)=>{
-    console.log('startted server');
+    console.log('deployed via ci cd');
 })
