@@ -4,7 +4,7 @@ const router = require('express').Router();
         next();
     },(req,res)=>{
         res.send({
-            "response" : "Hello Users from CI CD"
+            "response" : "Hello Users from CI-CD"
         })
     })
 
@@ -13,7 +13,7 @@ const router = require('express').Router();
         next();
     },(req,res)=>{
         res.send({
-            "response" : "Hello User from CI CD"
+            "response" : "Hello User from CI-CD"
         })
     })
 
