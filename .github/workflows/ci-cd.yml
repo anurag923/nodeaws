@@ -1,0 +1,44 @@
+  name: CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - main  # Change this to your default branch
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up SSH
+        env:
+          PRIVATE_KEY: ${{ secrets.EC2_SSH_KEY }}
+        run: |
+          mkdir -p ~/.ssh
+          echo "$PRIVATE_KEY" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+
+      - name: Deploy to EC2
+        env:
+          HOSTNAME: ${{ secrets.EC2_HOST }}
+          USERNAME: ${{ secrets.EC2_USER }}
+        run: |
+          ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa $USERNAME@$HOSTNAME << 'EOF'
+            # Navigate to the project directory
+            cd /path/to/your/project
+
+            # Pull the latest changes from the repository
+            git pull origin main
+
+            # Build the Docker image
+            docker build -t my-node-app .
+
+            # Stop and remove the old container if it exists
+            docker rm -f node-app || true
+
+            # Run the new container
+            docker run -d -p 3000:3000 --name node-app my-node-app
+          EOF
